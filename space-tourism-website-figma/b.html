@@ -1,0 +1,104 @@
+<script src="/translator?filename=static/js/index.js"></script>
+<script src="https://yastatic.net/share2/share.js"></script>
+
+<meta property='og:type' content='website' />
+<meta property='og:title' content='<#TNewsTitle>' />
+<meta property='og:description' content='<#TNewsDescription>' />
+<meta property='og:image' content='<#TNewsPicture>' />
+<meta property='og:image:type' content='image/jpg'>
+<meta property='og:image:width' content='1200' />
+<meta property='og:image:height' content='628' />
+<meta name='twitter:card' content='summary' />
+<meta name='twitter:site' content='@Petr96573818' />
+<meta name='twitter:title' content='' <#TNewsTitle>' />
+<meta name='twitter:description' content='<#TNewsDescription>' />
+<meta name='twitter:image' content='<#TNewsPicture>' />
+<link rel="stylesheet" href="<#SelfURLEx>/static/css/onenews.css">
+<style>
+    .today__card {
+        asepct-ratio: 1;
+        max-width: 300px;
+        border-radius: 15px;
+        transition: 0.15s ease-in-out;
+        cursor: pointer;
+        border-radius: 15px;
+        display: grid;
+    }
+
+    .today__card>* {
+        grid-area: 1 / -1;
+    }
+
+    .today__card-bg {
+        aspect-ratio: 1;
+        width: 100%;
+        background-position: center;
+        background-size: contain;
+        transition: 0.25s ease-in-out;
+        border-radius: 15px;
+    }
+
+    .today__card:hover .today__card-bg {
+        transform: scale(1.05);
+    }
+
+    .today__card:first-child {
+        margin: 0 5px 10px 10px;
+    }
+
+    .today__card a,
+    .today__card a:hover,
+    .today__card a:active {
+        color: #fff;
+        text-decoration: none;
+    }
+
+    .today__button {
+        border-radius: 16px;
+        padding: 9px 12px;
+        font-size: 15px;
+        line-height: 1;
+    }
+
+    @media screen and (max-width: 1024px) {
+
+        header,
+        .header {
+            padding-bottom: 10px;
+        }
+
+        .today {
+            margin-top: 20px;
+        }
+
+        .today__button {
+            padding: 8px 10px;
+            font-size: 14px;
+            line-height: 14px;
+        }
+    }
+
+    .contentPage {
+        overflow: hidden;
+    }
+
+    .contentPage a {
+        font-weight: 400;
+        color: #2B5DA8;
+    }
+
+    .contentPage .news p {
+        padding: 0;
+    }
+
+    @media screen and (min-width:1024px) {
+        .col-12 .p-title {
+            font-size: 25px;
+        }
+
+        .col-12 .similiar-news-link {
+            margin: 0;
+            font-size: 20px;
+        }
+    }
+</style>

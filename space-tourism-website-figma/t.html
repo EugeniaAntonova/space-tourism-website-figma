@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- <div class="timer timer--white js-tb" data-timer-name="tb">
+        <p class="timer__header timer__header_mob-slider" style="text-shadow: 0 0 8px rgba(255 255 255 / 0.6)">
+            До розыгрыша:
+        </p>
+        <div class="timer__body timer__body_mob-slider">
+            <div class="timer__section">
+                <span class="timer__item timer__item_mob-slider days">00</span>
+                <span class="timer__label timer__label_mob-slider">д.</span>
+            </div>
+            <div class="timer__section">
+                <span class="timer__item timer__item_mob-slider hours">00</span>
+                <span class="timer__label timer__label_mob-slider">ч.</span>
+            </div>
+            <div class="timer__section">
+                <span class="timer__item timer__item_mob-slider minutes">00</span>
+                <span class="timer__label timer__label_mob-slider">м.</span>
+            </div>
+        </div>
+    </div> -->
+    <div class="timer timer--white js-sfn" data-timer-name="sfn">
+        <p class="timer__header timer__header_mob-slider" style="text-shadow: 0 0 8px rgba(255 255 255 / 0.6)">
+            До розыгрыша:
+        </p>
+        <div class="timer__body timer__body_mob-slider">
+            <div class="timer__section">
+                <span class="timer__item timer__item_mob-slider days">00</span>
+                <span class="timer__label timer__label_mob-slider">д.</span>
+            </div>
+            <div class="timer__section">
+                <span class="timer__item timer__item_mob-slider hours">00</span>
+                <span class="timer__label timer__label_mob-slider">ч.</span>
+            </div>
+            <div class="timer__section">
+                <span class="timer__item timer__item_mob-slider minutes">00</span>
+                <span class="timer__label timer__label_mob-slider">м.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- <span class="info-value js-ld ld" data-timer-name="ld">
+        <span class=" timer__body_ld">00 ч. 00 м.</span>
+    </span>
+    <div class="timer js-sfn string-timer" data-timer-name="sfn">
+        <p class="timer__header timer__header_string">До розыгрыша:</p>
+        <div class="timer__body timer__body_string">00 ч. | 00 м.</div>
+    </div>
+    <div class="timer timer--white js-ftw" data-timer-name="ftw">
+        <p class="timer__header timer__header_mob-slider" style="text-shadow: 0 0 8px rgba(255 255 255 / 0.6)">
+            До розыгрыша:
+        </p>
+        <div class="timer__body timer__body_mob-slider">
+            <div class="timer__section">
+                <span class="timer__item timer__item_mob-slider days">00</span>
+                <span class="timer__label timer__label_mob-slider">д.</span>
+            </div>
+            <div class="timer__section">
+                <span class="timer__item timer__item_mob-slider hours">00</span>
+                <span class="timer__label timer__label_mob-slider">ч.</span>
+            </div>
+            <div class="timer__section">
+                <span class="timer__item timer__item_mob-slider minutes">00</span>
+                <span class="timer__label timer__label_mob-slider">м.</span>
+            </div>
+        </div>
+    </div> -->
+    
+
+     
+
+    <script>
+
+class MyTimer {
+  constructor(timer, name) {
+    if (!this.timersConfig.hasOwnProperty(name)) return;
+    this.timer = timer;
+    this.deadline = this.timersConfig[name].deadline;
+    this.nextDeadline =
+      this.getNextDate(this.timersConfig[name].nextDeadline) || false;
+    this.period = Number(this.timersConfig[name].period) || 0;
+    this.updateData();
+
+    let continueCount = true;
+
+    if (this.dif < 0) {
+      continueCount = this.onZeroDif();
+    }
+
+    if (continueCount) {
+      this.init();
+    }
+  }
+
+  timersConfig = {
+    ftw: {
+      deadline: "2024-08-13 20:00",
+      period: 168
+    },
+    ftw2: {
+      deadline: "2025-01-22 20:00",
+      period: 24
+    },
+    sfn: {
+      deadline: "2025-03-28 22:00",
+      nextDeadline: "2025-04-30 22:00, 2025-05-30 22:00, 2025-06-30 22:00"
+    },
+    tb: {
+      deadline: "2025-03-23 10:00",
+      nextDeadline: "2025-04-20 10:00, 2025-05-25 10:00, 2025-06-22 10:00"
+    },
+    fts: {
+      deadline: "2025-04-07 21:00",
+      nextDeadline: "2025-05-09 21:00, 2025-06-09 21:00"
+    },
+    ld: {
+      deadline: "2025-03-25 20:59:59"
+    },
+    lm: {
+      deadline: "2025-02-28 20:59:59"
+    },
+    mk: {
+      deadline: "2025-03-09 21:59:59"
+    },
+    ths: {
+      deadline: "2025-02-24 10:00:00",
+      period: 12
+    },
+    eghtw: {
+      deadline: "2025-02-24 19:00:00",
+      period: 24
+    },
+    sl: {
+      deadline: "2025-02-24 19:00:00",
+      period: 24
+    },
+    keno: {
+      deadline: "2025-02-24 22:00:00",
+      period: 24
+    },
+    keno2: {
+      deadline: "2025-02-24 14:30:00",
+      period: 24
+    }
+  };
+
+  init() {
+    this.findElements();
+    this.count();
+    setInterval(() => {
+      this.countDown();
+    }, 1000);
+  }
+
+  findElements() {
+    if (this.timer.classList.contains("string-timer")) {
+      this.timerType = "string";
+      this.timerBody = this.timer.querySelector(".timer__body");
+    } else if (this.timer.classList.contains("ld")) {
+      this.timerType = "ld";
+      this.timerBody = this.timer.querySelector(".timer__body_ld");
+    } else {
+      this.timerType = "normal";
+      this.daysOutput = this.timer.querySelector(`.days`);
+      this.hoursOutput = this.timer.querySelector(`.hours`);
+      this.minutesOutput = this.timer.querySelector(`.minutes`);
+    }
+  }
+
+  count() {
+    this.days = String(Math.floor(this.dif / (1000 * 60 * 60 * 24))).padStart(
+      2,
+      "0"
+    );
+    this.hours = String(Math.floor(this.dif / (1000 * 60 * 60)) % 24).padStart(
+      2,
+      "0"
+    );
+    this.minutes = String(Math.round(this.dif / (1000 * 60)) % 60).padStart(
+      2,
+      "0"
+    );
+    this.fillInTimer();
+  }
+
+  countDown() {
+    this.now = Date.parse(new Date());
+    this.dif = this.dif - 1000;
+    let continueCount = true;
+    if (this.dif < 0) {
+      continueCount = this.onZeroDif();
+    }
+
+    if (continueCount) {
+      this.count();
+    }
+
+    return;
+  }
+
+  onZeroDif() {
+    if (!this.period && !this.nextDeadline) {
+      return false;
+    }
+    if (this.nextDeadline) {
+      this.deadline = this.nextDeadline;
+      this.updateData();
+      return true;
+    }
+    if (this.period) {
+      this.upToDateTimer().then(() => this.updateData());
+      return true;
+    }
+    return false;
+  }
+
+  updateData() {
+    this.now = Date.parse(new Date());
+    this.stop = Date.parse(this.deadline);
+    this.dif = this.stop - this.now;
+  }
+
+  fillInTimer() {
+    requestAnimationFrame(() => {
+      if (this.timerType && this.timerType !== "normal") {
+        let separtor = this.timerType === "ld" ? "" : "|";
+        this.timerBody.textContent = `${
+          this.days > 0 ? this.days + "д. " + separtor + " " : ""
+        }${this.hours} ч. ${separtor} ${this.minutes} м.`;
+      } else if (this.daysOutput && this.hoursOutput && this.minutesOutput) {
+        this.daysOutput.textContent = this.days;
+        this.hoursOutput.textContent = this.hours;
+        this.minutesOutput.textContent = this.minutes;
+      }
+    });
+  }
+
+  getNextDate(dates) {
+    let i = 0;
+    let dateArr = dates.split(/,\s+/gim);
+    let now = Date.parse(new Date());
+    let stop = Date.parse(dateArr[i]);
+    let dif = stop - now;
+
+    function checkNextDate() {
+      do {
+        stop = Date.parse(dateArr[i]);
+        dif = stop - now;
+        i++;
+      } while (i < dateArr.length && dif < 0);
+      if (dif <= 0) {
+        return "no more dates, we are still < 0";
+      } else {
+        return stop;
+      }
+    }
+    return new Date(checkNextDate());
+  }
+  upToDateTimer() {
+    return new Promise((resolve) => {
+      let step = Number(this.period) * 60 * 60 * 1000;
+      console.log(step);
+      do {
+        this.stop += step;
+        this.dif = this.stop - this.now;
+      } while (this.dif < 0);
+      if (this.dif > 0) {
+        resolve();
+      }
+    });
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const timers = [...document.querySelectorAll("[data-timer-name]")];
+  timers.forEach((timer) => {
+    const timerClass = timer.dataSet.timerName;
+    new MyTimer(timer, timerClass);
+  });
+});
+
+
+//         const myTimer = (timer, isString) => {
+//   const postfix = timer.dataset.postfix;
+//   const deadline = timer.dataset.deadline;
+//   const period = Number(timer.dataset.period) || 0;
+//   const now = Date.parse(new Date());
+//   let stop = Date.parse(deadline);
+//   let dif = stop - now;
+  
+//   if (dif < 0 && !period) {
+//     if (timer.classList.contains('ld')) {
+//       timer.querySelector('.timer__body_ld').textContent = `00 ч. 00 м.`;
+//     }
+//     if (isString) {
+//        timer.querySelector('.timer__body').textContent = `00 c. | 00 м.`;
+//     }
+//     return;
+//   } else if (dif < 0 && period) {
+//     do {
+//     stop = new Date(stop);
+//     stop = stop.setDate(stop.getDate() + period);
+//     dif = stop - now;
+//     } while (dif < 0);
+//   }
+  
+//   const days = String(Math.floor(dif / (1000 * 60 * 60 * 24))).padStart(2, "0");
+//   const hours = String(Math.floor(dif / (1000 * 60 * 60)) % 24).padStart(2, "0");
+//   const minutes = String(Math.round(dif / (1000 * 60)) % 60).padStart(2, "0");
+  
+
+//   if (timer.classList.contains('ld')) {
+//     if (days > 0) {
+//       timer.querySelector('.timer__body_ld').textContent = `${days} д. ${hours} ч. ${minutes} м.`;
+//     } else {
+//        timer.querySelector('.timer__body_ld').textContent = `${hours} ч. ${minutes} м.`;
+//     }
+//   }
+
+//   if (isString) {
+//     if (days > 0) {
+//       timer.querySelector('.timer__body').textContent = `${days} д. | ${hours} ч. | ${minutes} м.`;
+//     } else {
+//        timer.querySelector('.timer__body').textContent = `${hours} ч. | ${minutes} м.`;
+//     }
+//   } else {    
+//     const daysElement = timer.querySelector(`.days-${postfix}`); 
+//     const hoursElement = timer.querySelector(`.hours-${postfix}`); 
+//     const minutesElement = timer.querySelector(`.minutes-${postfix}`); 
+    
+//     if (daysElement && hoursElement && minutesElement) {  
+//       daysElement.textContent = days;
+//       hoursElement.textContent = hours;
+//       minutesElement.textContent = minutes;
+//     }
+//   }
+  
+// }
+
+// const timersSettings = {
+//   ftw: {
+//     deadline: "2024-04-16 20:00",
+//     period: "7",
+//   },
+//   sfn: {
+//     deadline: "2024-05-31 21:45",
+//   },
+//   tb: {
+//     deadline: "2024-12-29 10:00",
+//   },
+//   fts: {
+//     deadline: "2024-04-16 21:00",
+//     period: "7",
+//   },
+//   ld: {
+//     deadline: "2024-06-23 10:00",
+//   },
+//   mk: {
+//     deadline: "2024-11-03 21:59:59",
+//   },
+//   nm: {
+//     deadline: "2024-12-31 21:59:59",
+//   },
+// };
+
+// //  регулярное выражение для поиска класса, который определяет название файла с настройками
+
+// const re = /\bjs-[a-zA-Z0-9]+\b/;
+// document.addEventListener('DOMContentLoaded', () => {
+//   const timers = [...document.querySelectorAll('[data-timer="true"]')];
+//   timers.forEach((timer) => {
+//     const timerClass = [...timer.classList].filter((item) => item.match(re)).join().slice(3);
+
+// // если соответствующий класс есть, то таймеру присваиваются атрибуты дедлайна и, если есть, периода обновления
+
+//   if (timerClass) {
+//     timer.setAttribute("data-deadline", `${timersSettings[timerClass].deadline}`);
+//     if (timersSettings[timerClass].period) {
+//        timer.setAttribute("data-period", `${timersSettings[timerClass]?.period}`);
+//     }
+//   } 
+
+// // если таймер имеет идентификатор строчного таймера, то его заполнение происходит через строку
+
+//     const isStringTimer = /string-timer/.test(timer.classList);
+//     if (isStringTimer) {
+//       myTimer(timer, isStringTimer)
+//     } else {
+//       myTimer(timer, false);
+//     }
+//     setInterval(() => {myTimer(timer)}, 10000);
+//   });
+// })
+
+// // если нужно заменить время в таймере в неудобное время, то ему нужно присвоить соответствующий класс и он поменяется автоматически
+// /*
+//     document.addEventListener('DOMContentLoaded', () => {
+//         const newDeadline = "2024-05-31 21:45";
+//         const checkNow = new Date();
+//         const timers = [...document.querySelectorAll('.js-change-deadline')];
+//         timers.forEach((item) => {
+//             const currentDedline = new Date(item.dataset.deadline);
+//             if (checkNow.getTime() >= currentDedline.getTime()) {
+//                 item.dataset.deadline = newDeadline;
+//             }
+//         })
+//     })*/
+    </script>
+</body>
+
+</html>
+
+ 
