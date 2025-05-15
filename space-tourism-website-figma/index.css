@@ -220,6 +220,10 @@ select {
     line-height: 1.8;
 }
 
+/* ---------------- */
+/*    components    */
+/* ---------------- */
+
 .numbered-title {
     font-family: var(--ff-sans-cond);
     font-size: var(--fs-500);
@@ -233,4 +237,35 @@ select {
     font-weight: 700;
     opacity: .25;
     margin-right: .86em;
+}
+
+.large-button {
+    display: grid;
+    place-items: center;
+    text-decoration: none;
+    aspect-ratio: 1;
+    padding: 2.125em;
+    border-radius: 50%;
+
+    position: relative;
+    isolation: isolate;
+    outline: none;
+}
+
+.large-button::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    border-radius: inherit;
+    transition: scale .5s ease-in-out, opacity .7s ease-in-out;
+
+    opacity: 0;
+    background: hsla(var(--clr-white) / 0.2);
+}
+@media (hover: hover) {
+    .large-button:is(:hover, :focus-visible)::before {
+        opacity: 1;
+        scale: 1.7;
+    }
 }
